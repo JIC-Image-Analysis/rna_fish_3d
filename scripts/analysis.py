@@ -9,11 +9,23 @@ from dtoolcore import DataSet
 
 from jicbioimage.core.image import Image
 from jicbioimage.core.transform import transformation
-from jicbioimage.core.io import AutoName, AutoWrite
+from jicbioimage.core.io import AutoName, AutoWrite, DataManager, FileBackend
 
 __version__ = "0.1.0"
 
 AutoName.prefix_format = "{:03d}_"
+
+
+def get_microscopy_collection(input_file):
+    """Return microscopy collection from input file."""
+    data_dir = "output"
+    if not os.path.isdir(data_dir):
+        os.mkdir(data_dir)
+    backend_dir = os.path.join(data_dir, '.backend')
+    file_backend = FileBackend(backend_dir)
+    data_manager = DataManager(file_backend)
+    microscopy_collection = data_manager.load(input_file)
+    return microscopy_collection
 
 
 def safe_mkdir(directory):
@@ -46,21 +58,26 @@ def analyse_file(fpath, output_directory):
 
     AutoName.directory = output_directory
 
-    image = Image.from_file(fpath)
-    image = identity(image)
+    microscopy_collection = get_microscopy_collection(fpath)
+    zstack = microscopy_collection.zstack()
+    zstack = identity(zstack)
+
+
+def analyse_item(dataset_dir, output_dir, identifier):
+    dataset = DataSet.from_uri(dataset_dir)
+    data_item_abspath = dataset.item_content_abspath(identifier)
+    item_info = dataset.item_properties(identifier)
+    specific_output_dir = item_output_path(output_dir, item_info["relpath"])
+    analyse_file(data_item_abspath, specific_output_dir)
 
 
 def analyse_dataset(dataset_dir, output_dir):
     """Analyse all the files in the dataset."""
-    dataset = DataSet.from_path(dataset_dir)
+    dataset = DataSet.from_uri(dataset_dir)
     logging.info("Analysing items in dataset: {}".format(dataset.name))
 
     for i in dataset.identifiers:
-        data_item_abspath = dataset.abspath_from_identifier(i)
-        item_info = dataset.item_from_identifier(i)
-
-        specific_output_dir = item_output_path(output_dir, item_info["path"])
-        analyse_file(data_item_abspath, specific_output_dir)
+        analyse_item(dataset_dir, output_dir, i)
 
 
 def main():
@@ -68,6 +85,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input_dataset", help="Input dataset")
     parser.add_argument("output_dir", help="Output directory")
+    parser.add_argument("-i", "--identifier", help="identifier")
     parser.add_argument("--debug", default=False, action="store_true",
                         help="Write out intermediate images")
     args = parser.parse_args()
@@ -95,7 +113,17 @@ def main():
 
     # Run the analysis.
     if os.path.isdir(args.input_dataset):
-        analyse_dataset(args.input_dataset, args.output_dir)
+        if args.identifier:
+            analyse_item(
+                args.input_dataset,
+                args.output_dir,
+                args.identifier
+            )
+        else:
+            analyse_dataset(
+                args.input_dataset,
+                args.output_dir
+            )
     else:
         parser.error("{} not a directory".format(args.input_dataset))
 
