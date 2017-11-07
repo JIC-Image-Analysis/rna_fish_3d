@@ -11,7 +11,7 @@ from jicbioimage.core.image import Image
 from jicbioimage.core.transform import transformation
 from jicbioimage.core.io import AutoName, AutoWrite, DataManager, FileBackend
 
-from find_spots import find_spots
+from find_spots import find_spots, annotate
 
 __version__ = "0.1.0"
 
@@ -64,7 +64,14 @@ def analyse_file(fpath, output_directory):
     zstack = microscopy_collection.zstack()
     zstack = identity(zstack)
 
-    spots = find_spots(zstack)
+    locs = find_spots(zstack)
+    annotation = annotate(zstack, locs)
+
+    fpath = os.path.join(AutoName.directory, "annotated.png")
+    with open(fpath, "wb") as fh:
+        fh.write(annotation.png())
+
+
 
 
 def analyse_item(dataset_dir, output_dir, identifier):
