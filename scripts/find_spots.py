@@ -8,9 +8,8 @@ from scipy.ndimage.filters import (
 )
 
 import skimage.measure
-
-from skimage.feature import match_template
-from skimage.morphology import ball
+import skimage.feature
+import skimage.morphology
 
 from jicbioimage.core.image import Image, Image3D
 from jicbioimage.core.transform import transformation
@@ -51,6 +50,21 @@ def sobel_magnitude_nd(z_stack):
 
 
 @transformation
+def match_template(z_stack, template, pad_input=True):
+    match_result = skimage.feature.match_template(
+        z_stack,
+        template,
+        pad_input=pad_input)
+    return match_result.view(Image3D)
+
+
+@transformation
+def filter_template_matches(z_stack, match_thresh):
+    locs = z_stack > match_thresh
+    return locs.view(Image3D)
+
+
+@transformation
 def connected_components(image, connectivity=2, background=None):
     # Work around skimage.measure.label behaviour in version 0.12 and higher
     # treats all 0 pixels as background even if "background" argument is set
@@ -83,7 +97,7 @@ def find_spots(zstack):
     zstack = smooth_gaussian(zstack, sigma=1)
     edge_array = sobel_magnitude_nd(zstack)
 
-    ball_template = ball(3)
+    ball_template = skimage.morphology.ball(3)
     ball_template[3, 3, 3] = 0
 
     match_result = match_template(edge_array, ball_template, pad_input=True)
@@ -101,8 +115,7 @@ def find_spots(zstack):
 
     stage_2_match = match_template(edge_array, better_template, pad_input=True)
 
-    match_thresh = 0.7
-    locs = stage_2_match > match_thresh
+    locs = filter_template_matches(stage_2_match, match_thresh=0.7)
 
     segmentation = connected_components(
         locs.view(PrettyColorImage3D),
