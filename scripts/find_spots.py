@@ -165,6 +165,16 @@ def generate_better_template(edge_array, match_result):
         pz-tr:pz+tr+1
     ]
 
+    # This requires numpy=>1.12.0
+    better_template_a0 = (better_template + np.flip(better_template, 0)) / 2.
+    better_template_a1 = (better_template + np.flip(better_template, 1)) / 2.
+    better_template_a2 = (better_template + np.flip(better_template, 2)) / 2.
+    better_template = (
+        better_template_a0
+        + better_template_a1
+        + better_template_a2
+    ) / 3.
+
     fpath = os.path.join(AutoName.directory, "better_template.png")
     image = normalise(better_template) * 255
     with open(fpath, "wb") as fh:
