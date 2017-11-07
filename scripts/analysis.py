@@ -11,6 +11,8 @@ from jicbioimage.core.image import Image
 from jicbioimage.core.transform import transformation
 from jicbioimage.core.io import AutoName, AutoWrite, DataManager, FileBackend
 
+from find_spots import find_spots
+
 __version__ = "0.1.0"
 
 AutoName.prefix_format = "{:03d}_"
@@ -61,6 +63,8 @@ def analyse_file(fpath, output_directory):
     microscopy_collection = get_microscopy_collection(fpath)
     zstack = microscopy_collection.zstack()
     zstack = identity(zstack)
+
+    spots = find_spots(zstack)
 
 
 def analyse_item(dataset_dir, output_dir, identifier):
