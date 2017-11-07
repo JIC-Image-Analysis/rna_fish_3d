@@ -1,4 +1,6 @@
 *.png
 *.pyc
+*.swp
 
 bash_history
+env
