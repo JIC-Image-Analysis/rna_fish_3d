@@ -1,4 +1,3 @@
-import numpy as np
 import skimage.morphology
 import skimage.feature.peak
 
@@ -31,10 +30,9 @@ def find_spots(zstack):
     intensity_2d = max_intensity_projection(zstack)
     intensity_2d = white_tophat(intensity_2d, 20)
     return skimage.feature.peak.peak_local_max(
-            intensity_2d,
-            threshold_abs=2500
+        intensity_2d,
+        threshold_abs=2500
     )
-
 
 
 def annotate(zstack, locs):
