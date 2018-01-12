@@ -56,7 +56,7 @@ def analyse_channel(microscopy_collection, channel_id):
 
     fpath = os.path.join(
         AutoName.directory,
-        "annotated_channel_{}.png".format(channel_id)
+        "enhanced_annotated_channel_{}.png".format(channel_id)
     )
     with open(fpath, "wb") as fh:
         fh.write(annotation.png())
