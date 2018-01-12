@@ -60,7 +60,10 @@ def analyse_channel(microscopy_collection, channel_id):
     locs = find_spots(zstack)
     annotation = annotate(zstack, locs)
 
-    fpath = os.path.join(AutoName.directory, "annotated.png")
+    fpath = os.path.join(
+        AutoName.directory,
+        "annotated_channel_{}.png".format(channel_id)
+    )
     with open(fpath, "wb") as fh:
         fh.write(annotation.png())
 
@@ -73,7 +76,8 @@ def analyse_file(fpath, output_directory):
 
     microscopy_collection = get_microscopy_collection(fpath)
 
-    analyse_channel(microscopy_collection, 0)
+    for channel_id in [0, 1]:
+        analyse_channel(microscopy_collection, channel_id)
 
 
 def analyse_item(dataset_dir, output_dir, identifier):
