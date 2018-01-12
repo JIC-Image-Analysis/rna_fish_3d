@@ -106,9 +106,8 @@ def analyse_dataset(dataset_dir, output_dir):
 def main():
     # Parse the command line arguments.
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input_dataset", help="Input dataset")
+    parser.add_argument("input_fpath", help="Input fpath")
     parser.add_argument("output_dir", help="Output directory")
-    parser.add_argument("-i", "--identifier", help="identifier")
     parser.add_argument("--debug", default=False, action="store_true",
                         help="Write out intermediate images")
     args = parser.parse_args()
@@ -135,20 +134,7 @@ def main():
     logging.info("Script version: {}".format(__version__))
 
     # Run the analysis.
-    if os.path.isdir(args.input_dataset):
-        if args.identifier:
-            analyse_item(
-                args.input_dataset,
-                args.output_dir,
-                args.identifier
-            )
-        else:
-            analyse_dataset(
-                args.input_dataset,
-                args.output_dir
-            )
-    else:
-        parser.error("{} not a directory".format(args.input_dataset))
+    analyse_file(args.input_fpath, args.output_dir)
 
 if __name__ == "__main__":
     main()
