@@ -8,8 +8,10 @@ import errno
 from dtoolcore import DataSet
 
 from jicbioimage.core.io import AutoName, AutoWrite, DataManager, FileBackend
+from jicbioimage.transform import max_intensity_projection
 
 from flat_analysis import find_spots, annotate
+#from cell_segmentation import segment
 
 __version__ = "0.1.0"
 
@@ -67,6 +69,18 @@ def analyse_file(fpath, output_directory):
     AutoName.directory = output_directory
 
     microscopy_collection = get_microscopy_collection(fpath)
+
+    # Write out a max projection of the DAPI channel.
+    dapi_zstack = microscopy_collection.zstack(c=2)
+    dapi_image = max_intensity_projection(dapi_zstack)
+    fpath = os.path.join(
+        AutoName.directory,
+        "dapi_channel_2.png"
+    )
+    with open(fpath, "wb") as fh:
+        fh.write(dapi_image.png())
+
+#   segmentation = segment(dapi_zstack)
 
     for channel_id in [0, 1]:
         analyse_channel(microscopy_collection, channel_id)
