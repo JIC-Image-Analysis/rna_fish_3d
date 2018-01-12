@@ -1,7 +1,12 @@
+import os
+
 from smarttoolbase import SmartTool, Command, parse_args
 
+_HERE = os.path.dirname(os.path.realpath(__file__))
+_SCRIPT = os.path.join(_HERE, "analysis.py")
+
 BASE_COMMANDS = [
-    Command("python " + "scripts/analysis.py" + " {input_fpath} .")]
+    Command("python " + _SCRIPT + " {input_fpath} .")]
 OUTPUTS = [
     "enhanced_annotated_channel_0.png",
     "enhanced_annotated_channel_1.png",
