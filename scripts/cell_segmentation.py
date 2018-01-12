@@ -1,3 +1,9 @@
+"""
+This is experimental code.
+
+It works well on some of the images but not all of them.
+"""
+
 import os
 
 from skimage.morphology import disk
