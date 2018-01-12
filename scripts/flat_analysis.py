@@ -29,15 +29,14 @@ def find_spots(zstack):
     zstack = white_tophat_3d(zstack, 5)
     intensity_2d = max_intensity_projection(zstack)
     intensity_2d = white_tophat(intensity_2d, 20)
-    return skimage.feature.peak.peak_local_max(
+    return intensity_2d, skimage.feature.peak.peak_local_max(
         intensity_2d,
         threshold_abs=2500
     )
 
 
-def annotate(zstack, locs):
-    intensity_2d = max_intensity_projection(zstack)
-    grayscale = normalise(intensity_2d) * 255
+def annotate(projection, locs):
+    grayscale = normalise(projection) * 255
     canvas = AnnotatedImage.from_grayscale(grayscale)
     for pos in locs:
         canvas.draw_cross(

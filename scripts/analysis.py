@@ -51,8 +51,8 @@ def item_output_path(output_directory, rel_path):
 def analyse_channel(microscopy_collection, channel_id):
     zstack = microscopy_collection.zstack(c=channel_id)
 
-    locs = find_spots(zstack)
-    annotation = annotate(zstack, locs)
+    cleaned_proj, locs = find_spots(zstack)
+    annotation = annotate(cleaned_proj, locs)
 
     fpath = os.path.join(
         AutoName.directory,
