@@ -1,4 +1,4 @@
-input_dataset_uri: data/sduncan_nutzmanh_meristem
+input_dataset_uri: ./data/sduncan_nutzmanh_meristem
 output_dataset_base: output
 output_dataset_name_suffix: spot_identification
 local_smarttool_fpath: scripts/smarttool_runner.py
