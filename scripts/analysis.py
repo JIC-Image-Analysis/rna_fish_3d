@@ -54,14 +54,8 @@ def identity(image):
     return image
 
 
-def analyse_file(fpath, output_directory):
-    """Analyse a single file."""
-    logging.info("Analysing file: {}".format(fpath))
-
-    AutoName.directory = output_directory
-
-    microscopy_collection = get_microscopy_collection(fpath)
-    zstack = microscopy_collection.zstack()
+def analyse_channel(microscopy_collection, channel_id):
+    zstack = microscopy_collection.zstack(c=channel_id)
 
     locs = find_spots(zstack)
     annotation = annotate(zstack, locs)
@@ -71,6 +65,15 @@ def analyse_file(fpath, output_directory):
         fh.write(annotation.png())
 
 
+def analyse_file(fpath, output_directory):
+    """Analyse a single file."""
+    logging.info("Analysing file: {}".format(fpath))
+
+    AutoName.directory = output_directory
+
+    microscopy_collection = get_microscopy_collection(fpath)
+
+    analyse_channel(microscopy_collection, 0)
 
 
 def analyse_item(dataset_dir, output_dir, identifier):
