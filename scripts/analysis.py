@@ -7,8 +7,6 @@ import errno
 
 from dtoolcore import DataSet
 
-from jicbioimage.core.image import Image
-from jicbioimage.core.transform import transformation
 from jicbioimage.core.io import AutoName, AutoWrite, DataManager, FileBackend
 
 from flat_analysis import find_spots, annotate
@@ -46,12 +44,6 @@ def item_output_path(output_directory, rel_path):
     abs_path = os.path.join(output_directory, rel_path)
     safe_mkdir(abs_path)
     return abs_path
-
-
-@transformation
-def identity(image):
-    """Return the image as is."""
-    return image
 
 
 def analyse_channel(microscopy_collection, channel_id):
