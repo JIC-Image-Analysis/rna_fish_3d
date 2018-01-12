@@ -42,6 +42,7 @@ def annotate(projection, locs):
         canvas.draw_cross(
             pos,
             color=(255, 0, 255),
-            radius=1
+#           radius=1
+            radius=0
         )
     return canvas
