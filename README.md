@@ -44,3 +44,20 @@ Now you can run the image analysis.
 ```
 [root@048bd4bd961c /]# python scripts/analysis.py --debug data/ output/
 ```
+
+## Cluster run
+
+Create a singularity image from the docker image.
+
+```
+cd singularity
+bash build_singularity_image.sh
+```
+
+Copy the singularity image file to the research group share.
+
+Use the [slurm_runner.py](https://github.com/jic-dtool/smarttools/blob/master/runners/scripts/slurm_runner.py) script and the ``slurm_analysis.yml`` to generate slurm scripts.
+
+Copy the slurm scripts to the research group share.
+
+Run the slurm scripts on the cluster.
