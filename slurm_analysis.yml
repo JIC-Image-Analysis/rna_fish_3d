@@ -1,0 +1,23 @@
+---
+input_dataset_uri: "irods:///jic_raw_data/rg-matthew-hartley/e95c360a-522d-4972-bc3a-d67526ac59e4"
+output_dataset_base: "irods:///jic_overflow/rg-matthew-hartley"
+output_dataset_name_suffix: "spot_identification"
+slurm_run_template: |
+  #!/bin/bash -e
+  #SBATCH --partition=nbi-short
+  #SBATCH --mem=2000
+  #SBATCH --job-name={name}
+  #SBATCH -o {stdout}
+  #SBATCH -e {stderr}
+
+  singularity exec /nbi/Research-Groups/JIC/Matthew-Hartley/scratch/olssont/sduncan_slurm_runners/rna_fish_3d_singularity.img python /scripts/smarttool_runner.py -d {input_dataset_uri} -o {output_dataset_uri} -i {identifier}
+
+slurm_freeze_template: |
+  #!/bin/bash -e
+  #SBATCH --partition=nbi-short
+  #SBATCH --mem=2000
+  #SBATCH --job-name={name}
+  #SBATCH -o {stdout}
+  #SBATCH -e {stderr}
+
+  /jic/software/testing/dtool/2.3.2/dtool freeze {output_dataset_uri}
